@@ -14,7 +14,7 @@ __author__ = 'JHao'
 
 import re
 from time import sleep
-
+import json
 from util.webRequest import WebRequest
 
 
@@ -327,3 +327,15 @@ class ProxyFetcher(object):
             ips = re.findall(r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,5}", r.text)
             for ip in ips:
                 yield ip.strip()
+
+    @staticmethod
+    def payingProxy1():
+        url = '''
+        http://api.xdaili.cn/xdaili-api//privateProxy/applyStaticProxy?spiderId=3f349be46a674a9c9e5c9691a3625947&returnType=2&count=1
+        '''
+        r = WebRequest().get(url, timeout=10)
+        result = json.loads(r.text)
+        ips = result["RESULT"]
+        for ip in ips:
+            proxy = "{}:{}".format(ip["ip"], ip["port"])
+            yield proxy
